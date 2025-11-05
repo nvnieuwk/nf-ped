@@ -1,4 +1,12 @@
-# nf-ped plugin
+# nf-ped
+
+The nf-ped plugin provides functionality to work with PED files in Nextflow pipelines. PED files are commonly used in genetics to describe the relationships and attributes of individuals in a study.
+
+The current implementation supports PED files as described by the [GATK documentation](https://gatk.broadinstitute.org/hc/en-us/articles/360035531972-PED-Pedigree-format). This is a subset of the full specification available at [PLINK](https://zzz.bwh.harvard.edu/plink/data.shtml#ped). This functionality can be expanded upon request. Here's a list of the unsupported features:
+
+- Custom phenotype values (only 1 (unaffected) and 2 (affected) are supported, all other values will be treated as 'missing')
+- Additional columns beyond the standard six (family, individual, father, mother, sex, phenotype).
+- Support for less columns than the standard six.
 
 ## Building
 

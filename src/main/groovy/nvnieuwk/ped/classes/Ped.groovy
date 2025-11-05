@@ -13,16 +13,14 @@ class Ped {
         def Integer lineCount = 0
         pedFile.eachLine { String line ->
             lineCount++
-            final trimmed = line.trim()
-            if(trimmed.startsWith('#')) {
+            if(line.startsWith('#')) {
                 return // skip comment lines
             }
-            final List<String> parts = trimmed.split(options.get("sep", "\t"))
-            println(parts)
+            final List<String> parts = line.split(options.get("sep", "\t"))
             if(parts.size() != 6) {
-                throw new InvalidPedigreeException("Could not determine PED entry at line $lineCount in '$pedFile': expected 6 columns, found ${parts.size()}")
+                throw new InvalidPedigreeException("Could not determine PED entry at line $lineCount in '${pedFile.toUri()}': expected 6 columns, found ${parts.size()}")
             }
-            final PedEntry entry = new PedEntry(parts)
+            final PedEntry entry = new PedEntry(parts, lineCount, pedFile)
             entries.add(entry)
             families.add(entry.family)
             individuals.add(entry.individual)
