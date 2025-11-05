@@ -1,4 +1,4 @@
-package nvnieuwk.plugin
+package nvnieuwk.ped
 
 import nextflow.Session
 import spock.lang.Specification
