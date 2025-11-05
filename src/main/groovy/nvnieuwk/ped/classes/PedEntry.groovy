@@ -33,6 +33,30 @@ class PedEntry {
         return ignoreValues.contains(id) ? null : id
     }
 
+    public String getFamily() {
+        return family
+    }
+
+    public String getIndividual() {
+        return individual
+    }
+
+    public String getFather() {
+        return father
+    }
+
+    public String getMother() {
+        return mother
+    }
+
+    public String getSex() {
+        return sex.toString()
+    }
+
+    public String getPhenotype() {
+        return phenotype.toString()
+    }
+
 }
 
 enum Sex {
