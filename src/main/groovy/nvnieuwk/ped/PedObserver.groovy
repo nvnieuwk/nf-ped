@@ -13,13 +13,4 @@ import nextflow.trace.TraceObserver
 @CompileStatic
 class PedObserver implements TraceObserver {
 
-    @Override
-    void onFlowCreate(Session session) {
-        println "Pipeline is starting! 🚀"
-    }
-
-    @Override
-    void onFlowComplete() {
-        println "Pipeline complete! 👋"
-    }
 }

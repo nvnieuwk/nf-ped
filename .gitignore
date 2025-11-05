@@ -6,3 +6,6 @@
 # Ignore Gradle build output directory
 build
 work
+
+# Ignore local test pipeline
+test-pipeline

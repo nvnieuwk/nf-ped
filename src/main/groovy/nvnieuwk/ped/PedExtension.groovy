@@ -1,6 +1,8 @@
 package nvnieuwk.ped
 
 import groovy.transform.CompileStatic
+import java.nio.file.Path
+
 import nextflow.Session
 import nextflow.plugin.extension.Function
 import nextflow.plugin.extension.PluginExtensionPoint
@@ -16,14 +18,18 @@ class PedExtension extends PluginExtensionPoint {
     protected void init(Session session) {
     }
 
-    /**
-     * Say hello to the given target.
-     *
-     * @param target
-     */
     @Function
-    void sayHello(String target) {
-        println "Hello, ${target}!"
+    Ped initializePed(Map<String,Object> options = [:], Path pedFile) {
+        return initializePed(options, [pedFile])
+    }
+
+    @Function
+    Ped initializePed(Map<String,Object> options = [:], List<Path> pedFiles) {
+        final Ped ped = new Ped()
+        pedFiles.each { Path pedFile ->
+            ped.importPed(pedFile)
+        }
+        return ped
     }
 
 }

@@ -8,10 +8,10 @@ nextflowPlugin {
     nextflowVersion = '24.10.0'
 
     provider = 'nvnieuwk'
-    className = 'nvnieuwk.plugin.PedPlugin'
+    className = 'nvnieuwk.ped.PedPlugin'
     extensionPoints = [
-        'nvnieuwk.plugin.PedExtension',
-        'nvnieuwk.plugin.PedFactory'
+        'nvnieuwk.ped.PedExtension',
+        'nvnieuwk.ped.PedFactory'
     ]
 
 }
