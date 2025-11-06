@@ -92,6 +92,9 @@ class Ped {
         }
         final Path outputFile = Nextflow.file(outputPath)
         if(!outputFile.exists() || options.get("overwrite", false)) {
+            if(!outputFile.parent.exists()) {
+                outputFile.parent.mkdirs()
+            }
             outputFile.withWriter { target ->
                 publishEntries.each { PedEntry entry ->
                     target.writeLine(entry.toString())
