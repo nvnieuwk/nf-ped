@@ -22,7 +22,7 @@ The current implementation of the nf-ped plugin is fairly basic but should allow
 
 ### Initialization
 
-To start working with PED files, you can initialize a `PED` object using the `initializePed` function.
+To start working with PED files, you can initialize a `Ped` object using the `initializePed` function.
 
 ```groovy
 include { initializePed } from 'plugin/nf-ped'
