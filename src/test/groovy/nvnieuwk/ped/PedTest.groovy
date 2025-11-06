@@ -85,6 +85,42 @@ class PedTest extends Specification {
         result.size() == 3
     }
 
+    def 'getEntriesByIndividual' () {
+        given:
+        def ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        when:
+        def result = ped.getEntriesByIndividual("sample2")
+        then:
+        result instanceof Set<PedEntry>
+        result.size() == 1
+    }
+
+    def 'getFamiliesFromIndividual' () {
+        given:
+        def ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        when:
+        def result = ped.getFamiliesFromIndividual("sample2")
+        then:
+        result instanceof Set<String>
+        result == ["family1"] as Set<String>
+    }
+
+    def 'getIndividualsFromFamily' () {
+        given:
+        def ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        when:
+        def result = ped.getIndividualsFromFamily("family1")
+        then:
+        result instanceof Set<String>
+        result == ["sample1", "sample2", "sample3"] as Set<String>
+    }
+
     def 'writePed default' () {
         given:
         def Session session = Mock(Session)
