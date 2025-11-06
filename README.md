@@ -121,6 +121,12 @@ The `writePed` method allows you to write the PED data to a file. By default the
 def pedFilePath = ped.writePed()
 ```
 
+A file path can also be provided to write the PED data to a specific location:
+
+```groovy
+def pedFilePath = ped.writePed("path/to/output.ped")
+```
+
 Additional options can be provided to this method:
 - `families`: A list of family IDs to filter the entries on. Only entries belonging to the specified families will be included in the output PED file. If not provided, all entries will be included.
 - `overwrite`: A boolean flag indicating whether to overwrite an existing PED file. Default is `false`.
