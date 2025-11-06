@@ -14,8 +14,11 @@ import nextflow.plugin.extension.PluginExtensionPoint
 @CompileStatic
 class PedExtension extends PluginExtensionPoint {
 
+    Session session
+
     @Override
     protected void init(Session session) {
+        this.session = session
     }
 
     @Function
@@ -25,7 +28,7 @@ class PedExtension extends PluginExtensionPoint {
 
     @Function
     Ped initializePed(Map<String,Object> options = [:], List<Path> pedFiles) {
-        final Ped ped = new Ped()
+        final Ped ped = new Ped(session)
         pedFiles.each { Path pedFile ->
             ped.importPed(pedFile)
         }

@@ -1,13 +1,25 @@
 package nvnieuwk.ped
 
 import java.nio.file.Path
+import java.security.MessageDigest
+import groovy.util.logging.Slf4j
+
+import nextflow.Session
+import nextflow.Nextflow
 
 import nvnieuwk.ped.exceptions.InvalidPedigreeException
 
+@Slf4j
 class Ped {
     private final Set<PedEntry> entries = []
     private final Set<String> families = []
     private final Set<String> individuals = []
+
+    private final String workDir
+
+    Ped(Session session) {
+        this.workDir = session?.getWorkDir()?.toString() ?: "work"
+    }
 
     void importPed(Map<String, Object> options = [:], Path pedFile) {
         def Integer lineCount = 0
@@ -21,10 +33,66 @@ class Ped {
                 throw new InvalidPedigreeException("Could not determine PED entry at line $lineCount in '${pedFile.toUri()}': expected 6 columns, found ${parts.size()}")
             }
             final PedEntry entry = new PedEntry(parts, lineCount, pedFile)
-            entries.add(entry)
-            families.add(entry.family)
-            individuals.add(entry.individual)
+            this.entries.add(entry)
+            this.families.add(entry.family)
+            this.individuals.add(entry.individual)
         }
+    }
+
+    public Set<PedEntry> getEntries() {
+        return entries
+    }
+
+    public Set<String> getFamilies() {
+        return families
+    }
+
+    public Set<String> getIndividuals() {
+        return individuals
+    }
+
+    public Set<PedEntry> getEntriesByFamily(String familyId) {
+        return this.entries.findAll { PedEntry entry -> entry.family == familyId }
+    }
+
+    public Path writePed(String outputPath) {
+        return writePed([:], outputPath)
+    }
+
+    public Path writePed(Map<String,Object> options = [:], String outputPath = null) {
+        def Set<PedEntry> publishEntries = []
+        final Set<String> publishFamilies = options.get("families", []) as Set<String>
+        if(publishFamilies) {
+            publishFamilies.each { String familyId ->
+                if(!this.families.contains(familyId)) {
+                    log.warn("Family ID '$familyId' not found in pedigree, skipping...")
+                }
+                getEntriesByFamily(familyId).each { PedEntry entry ->
+                    publishEntries.add(entry)
+                }
+            }
+        } else {
+            publishEntries = this.entries
+        }
+
+        // Generate unique output path name for PED contents
+        if(!outputPath) {
+            def MessageDigest md = MessageDigest.getInstance("MD5")
+            publishEntries.each { PedEntry entry ->
+                md.update(entry.toString().getBytes("UTF-8"))
+            }
+            def String md5 = new BigInteger(1, md.digest()).toString(16)
+            outputPath = "${workDir}/ped_${md5}.ped" as String
+        }
+
+        // Write the PED file
+        final Path outputFile = Nextflow.file(outputPath)
+        outputFile.withWriter { target ->
+            publishEntries.each { PedEntry entry ->
+                target.writeLine(entry.toString())
+            }
+        }
+        return outputFile
     }
 
 }

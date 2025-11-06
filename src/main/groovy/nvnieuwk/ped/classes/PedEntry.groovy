@@ -57,6 +57,10 @@ class PedEntry {
         return phenotype.toString()
     }
 
+    public String toString() {
+        return "${family}\t${individual}\t${father ?: ''}\t${mother ?: ''}\t${sex}\t${phenotype}"
+    }
+
 }
 
 enum Sex {
@@ -73,6 +77,14 @@ enum Sex {
             return UNKNOWN
         }
     }
+
+    public String toString() {
+        switch(this) {
+            case MALE: return "1"
+            case FEMALE: return "2"
+            case UNKNOWN: return "0"
+        }
+    }
 }
 
 enum Phenotype {
@@ -87,6 +99,14 @@ enum Phenotype {
             return AFFECTED
         } else {
             return MISSING
+        }
+    }
+
+    public String toString() {
+        switch(this) {
+            case UNAFFECTED: return "1"
+            case AFFECTED: return "2"
+            case MISSING: return "0"
         }
     }
 }
