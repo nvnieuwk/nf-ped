@@ -27,7 +27,7 @@ class PedExtension extends PluginExtensionPoint {
     }
 
     @Function
-    Ped initializePed(Map<String,Object> options = [:], List<Path> pedFiles) {
+    Ped initializePed(Map<String,Object> options = [:], List<Path> pedFiles = []) {
         final Ped ped = new Ped(session)
         pedFiles.each { Path pedFile ->
             ped.importPed(pedFile)
