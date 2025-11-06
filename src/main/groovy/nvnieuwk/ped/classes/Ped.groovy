@@ -86,13 +86,18 @@ class Ped {
         }
 
         // Write the PED file
+        if(!publishEntries) {
+            log.warn("No PED entries to publish, skipping writing PED file")
+            return null
+        }
         final Path outputFile = Nextflow.file(outputPath)
-        outputFile.withWriter { target ->
-            publishEntries.each { PedEntry entry ->
-                target.writeLine(entry.toString())
+        if(!outputFile.exists() || options.get("overwrite", false)) {
+            outputFile.withWriter { target ->
+                publishEntries.each { PedEntry entry ->
+                    target.writeLine(entry.toString())
+                }
             }
         }
         return outputFile
     }
-
 }
