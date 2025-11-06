@@ -82,7 +82,7 @@ class Ped {
                 md.update(entry.toString().getBytes("UTF-8"))
             }
             def String md5 = new BigInteger(1, md.digest()).toString(16)
-            outputPath = "${workDir}/ped_${md5}.ped" as String
+            outputPath = "${workDir}/generated_peds/ped_${md5}.ped" as String
         }
 
         // Write the PED file
