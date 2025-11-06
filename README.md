@@ -8,6 +8,150 @@ The current implementation supports PED files as described by the [GATK document
 - Additional columns beyond the standard six (family, individual, father, mother, sex, phenotype).
 - Support for less columns than the standard six.
 
+Add the following to your Nextflow configuration file to enable the plugin:
+
+```groovy
+plugins {
+    id 'nf-ped@0.1.0'
+}
+```
+
+## Features
+
+The current implementation of the nf-ped plugin is fairly basic but should allow users to do most common operations with PED files. The main features include:
+
+### Initialization
+
+To start working with PED files, you can initialize a `PED` object using the `initializePed` function.
+
+```groovy
+include { initializePed } from 'plugin/nf-ped'
+def ped = initializePed()
+```
+
+Optionally, you can provide a list of PED files to import during initialization:
+
+```groovy
+def ped = initializePed([file("path/to/first.ped"), file("path/to/second.ped")])
+```
+
+Or even a single PED file:
+
+```groovy
+def ped = initializePed(file("path/to/file.ped"))
+```
+
+### Working with the PED object
+
+The PED object provides methods to fetch and publish PED data:
+
+#### importPed
+
+The `importPed` method allows you to import additional PED files into the existing PED object.
+
+```groovy
+ped.importPed(file("path/to/another.ped"))
+```
+
+Additional options can be provided to this method:
+
+- `sep`: Specify a custom separator if the PED file uses a different delimiter (default is `\t`).
+
+#### getEntries
+
+The `getEntries` method retrieves entries from the PED object. The returned values are a set of the `PedEntry` class. See the [`PedEntry`](#working-with-the-ped-entries) documentation for more details. 
+
+```groovy
+def entries = ped.getEntries()
+```
+
+#### getFamilies
+
+The `getFamilies` method retrieves a list of unique family IDs present in the PED data.
+
+```groovy
+def families = ped.getFamilies()
+```
+
+#### getIndividuals
+
+The `getIndividuals` method retrieves a list of unique individual IDs present in the PED data.
+
+```groovy
+def individuals = ped.getIndividuals()
+```
+
+#### getEntriesByFamily
+
+The `getEntriesByFamily` method retrieves all [entries](#working-with-the-ped-entries) associated with a specific family ID.
+
+```groovy
+def familyEntries = ped.getEntriesByFamily("family_id")
+```
+
+#### getEntriesByIndividual
+
+The `getEntriesByIndividual` method retrieves the [entries](#working-with-the-ped-entries) associated with a specific individual ID. Only the entries where the individual is listed as the individual (not as a parent) are returned.
+
+```groovy
+def individualEntries = ped.getEntriesByIndividual("individual_id")
+```
+
+#### getFamiliesFromIndividual
+
+The `getFamiliesFromIndividual` method retrieves the family IDs associated with a specific individual ID.
+
+```groovy
+def individualFamilies = ped.getFamiliesFromIndividual("individual_id")
+```
+
+#### getIndividualsFromFamily
+
+The `getIndividualsFromFamily` method retrieves the individual IDs associated with a specific family ID.
+
+```groovy
+def familyIndividuals = ped.getIndividualsFromFamily("family_id")
+```
+
+#### writePed
+
+The `writePed` method allows you to write the PED data to a file. By default the file will be created in the working directory in the following path: `generated_peds/ped_<md5>.ped`, where `<md5>` is a hash based on the contents of the PED data. The method returns the path object to the created PED file (or the already existing PED file).
+
+```groovy
+def pedFilePath = ped.writePed()
+```
+
+Additional options can be provided to this method:
+- `families`: A list of family IDs to filter the entries on. Only entries belonging to the specified families will be included in the output PED file. If not provided, all entries will be included.
+- `overwrite`: A boolean flag indicating whether to overwrite an existing PED file. Default is `false`.
+
+### Working with the PED entries
+
+The PED entries are represented by the immutable `PedEntry` class. Each entry corresponds to a line in the PED file and contains the following attributes:
+- `family`: The family ID.
+- `individual`: The individual ID.
+- `father`: The father ID.
+- `mother`: The mother ID.
+- `sex`: The sex of the individual (1 = male, 2 = female, other = unknown).
+- `phenotype`: The phenotype of the individual (1 = unaffected, 2 = affected, other = missing).
+
+These attributes can be accessed directly from the `PedEntry` object. For example:
+
+```groovy
+def entry = ped.getEntries()[0]
+// Using attribute names
+def familyId = entry.family
+// Using getter methods
+def familyId = entry.getFamily()
+```
+
+The `PedEntry` class also provides a `toString()` method that returns a string representation of the entry in PED file format.
+
+```groovy
+def entry = ped.getEntries()[0]
+def entryString = entry.toString()
+```
+
 ## Building
 
 To build the plugin:
