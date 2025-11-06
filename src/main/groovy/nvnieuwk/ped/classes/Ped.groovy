@@ -12,8 +12,6 @@ import nvnieuwk.ped.exceptions.InvalidPedigreeException
 @Slf4j
 class Ped {
     private final Set<PedEntry> entries = []
-    private final Set<String> families = []
-    private final Set<String> individuals = []
 
     private final String workDir
 
@@ -44,15 +42,27 @@ class Ped {
     }
 
     public Set<String> getFamilies() {
-        return families
+        return entries.collect { PedEntry entry -> entry.family } as Set<String>
     }
 
     public Set<String> getIndividuals() {
-        return individuals
+        return entries.collect { PedEntry entry -> entry.individual } as Set<String>
     }
 
     public Set<PedEntry> getEntriesByFamily(String familyId) {
         return this.entries.findAll { PedEntry entry -> entry.family == familyId }
+    }
+
+    public Set<PedEntry> getEntriesByIndividual(String individualId) {
+        return this.entries.findAll { PedEntry entry -> entry.individual == individualId }
+    }
+
+    public Set<String> getFamiliesFromIndividual(String individualId) {
+        return this.entries.findAll { PedEntry entry -> entry.individual == individualId }.collect { PedEntry entry -> entry.family } as Set<String>
+    }
+
+    public Set<String> getIndividualsFromFamily(String familyId) {
+        return this.entries.findAll { PedEntry entry -> entry.family == familyId }.collect { PedEntry entry -> entry.individual } as Set<String>
     }
 
     public Path writePed(String outputPath) {
@@ -64,7 +74,7 @@ class Ped {
         final Set<String> publishFamilies = options.get("families", []) as Set<String>
         if(publishFamilies) {
             publishFamilies.each { String familyId ->
-                if(!this.families.contains(familyId)) {
+                if(!getFamilies().contains(familyId)) {
                     log.warn("Family ID '$familyId' not found in pedigree, skipping...")
                 }
                 getEntriesByFamily(familyId).each { PedEntry entry ->
