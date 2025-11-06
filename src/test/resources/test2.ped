@@ -1,0 +1,4 @@
+#fam-id         ind-id  pat-id  mat-id  sex     phen
+family1	sample1	0	0	2	0
+family1	sample2	0	0	1	0
+family1	sample3	sample2	sample1	1	0
