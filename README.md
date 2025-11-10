@@ -12,7 +12,7 @@ Add the following to your Nextflow configuration file to enable the plugin:
 
 ```groovy
 plugins {
-    id 'nf-ped@0.2.0'
+    id 'nf-ped@0.3.0'
 }
 ```
 
@@ -56,6 +56,7 @@ ped.importPed(file("path/to/another.ped"))
 Additional options can be provided to this method:
 
 - `sep`: Specify a custom separator if the PED file uses a different delimiter (default is `\t`).
+- `overwrite`: A boolean flag indicating whether to overwrite existing entries with the same family and individual ID. Default is `false`, which means duplicate entries will be skipped.
 
 #### getEntries
 
@@ -63,6 +64,36 @@ The `getEntries` method retrieves entries from the PED object. The returned valu
 
 ```groovy
 def entries = ped.getEntries()
+```
+
+#### setEntries
+
+The `setEntries` method allows you to set the entire set of PED entries in the PED object. You need to provide a set of `PedEntry` objects.
+
+```groovy
+def entries = ped.getEntries()
+// Modify entries as needed
+
+// Set entries back to the PED object
+ped.setEntries(entries)
+```
+
+#### addEntry
+
+The `addEntry` method allows you to add a single `PedEntry` object to the PED object.
+
+```groovy
+def entry = ped.getEntries().first()
+ped2.addEntry(entry)
+```
+
+#### addEntries
+
+The `addEntries` method allows you to add multiple `PedEntry` objects to the PED object at once. You need to provide a set of `PedEntry` objects.
+
+```groovy
+def entries = ped.getEntries()
+ped2.addEntries(entries)
 ```
 
 #### getFamilies
@@ -133,7 +164,7 @@ Additional options can be provided to this method:
 
 ### Working with the PED entries
 
-The PED entries are represented by the immutable `PedEntry` class. Each entry corresponds to a line in the PED file and contains the following attributes:
+The PED entries are represented by the `PedEntry` class. Each entry corresponds to a line in the PED file and contains the following attributes:
 - `family`: The family ID.
 - `individual`: The individual ID.
 - `father`: The father ID.
@@ -158,6 +189,14 @@ def entry = ped.getEntries()[0]
 def entryString = entry.toString()
 ```
 
+Each attribute of the `PedEntry` class can be modified using setter methods. For example:
+
+```groovy
+def entry = ped.getEntries()[0]
+entry.setFather("new_father_id")
+entry.setPhenotype("2")
+```
+
 ## Building
 
 To build the plugin:
@@ -170,7 +209,7 @@ make assemble
 The plugin can be tested without a local Nextflow installation:
 
 1. Build and install the plugin to your local Nextflow installation: `make install`
-2. Run a pipeline with the plugin: `nextflow run hello -plugins nf-ped@0.2.0`
+2. Run a pipeline with the plugin: `nextflow run hello -plugins nf-ped@0.3.0`
 
 ## Publishing
 

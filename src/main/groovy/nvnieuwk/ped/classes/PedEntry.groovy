@@ -69,12 +69,20 @@ class PedEntry {
         return sex.toString()
     }
 
+    public void setSex(Integer sex) {
+        setSex(sex.toString())
+    }
+
     public void setSex(String sex) {
         this.sex = Sex.determine(sex)
     }
 
     public String getPhenotype() {
         return phenotype.toString()
+    }
+
+    public void setPhenotype(Integer phenotype) {
+        setPhenotype(phenotype.toString())
     }
 
     public void setPhenotype(String phenotype) {

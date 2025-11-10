@@ -19,7 +19,7 @@ class Ped {
         this.workDir = session?.getWorkDir()?.toString() ?: "work"
     }
 
-    void importPed(Map<String, Object> options = [:], Path pedFile) {
+    public void importPed(Map<String, Object> options = [:], Path pedFile) {
         def Integer lineCount = 0
         pedFile.eachLine { String line ->
             lineCount++
@@ -31,9 +31,12 @@ class Ped {
                 throw new InvalidPedigreeException("Could not determine PED entry at line $lineCount in '${pedFile.toUri()}': expected 6 columns, found ${parts.size()}")
             }
             final PedEntry entry = new PedEntry(parts, lineCount, pedFile)
+            if(options.get("overwrite", false)) {
+                this.entries.removeAll { PedEntry e -> e.family == entry.family && e.individual == entry.individual }
+            } else if(this.entries.any { PedEntry e -> e.family == entry.family && e.individual == entry.individual }) {
+                return null // skip duplicate entries
+            }
             this.entries.add(entry)
-            this.families.add(entry.family)
-            this.individuals.add(entry.individual)
         }
     }
 
