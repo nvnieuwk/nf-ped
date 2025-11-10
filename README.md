@@ -12,7 +12,7 @@ Add the following to your Nextflow configuration file to enable the plugin:
 
 ```groovy
 plugins {
-    id 'nf-ped@0.1.0'
+    id 'nf-ped@0.2.0'
 }
 ```
 
@@ -170,7 +170,7 @@ make assemble
 The plugin can be tested without a local Nextflow installation:
 
 1. Build and install the plugin to your local Nextflow installation: `make install`
-2. Run a pipeline with the plugin: `nextflow run hello -plugins nf-ped@0.1.0`
+2. Run a pipeline with the plugin: `nextflow run hello -plugins nf-ped@0.2.0`
 
 ## Publishing
 

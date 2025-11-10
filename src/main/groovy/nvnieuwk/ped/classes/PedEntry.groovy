@@ -5,12 +5,12 @@ import java.nio.file.Path
 import nvnieuwk.ped.exceptions.InvalidPedigreeException
 
 class PedEntry {
-    private final String family
-    private final String individual
-    private final String father
-    private final String mother
-    private final Sex sex
-    private final Phenotype phenotype
+    private String family
+    private String individual
+    private String father
+    private String mother
+    private Sex sex
+    private Phenotype phenotype
 
     PedEntry(List<String> parts, Integer lineNumber, Path pedFile) {
         this.family = parseID(parts[0])
@@ -37,28 +37,52 @@ class PedEntry {
         return family
     }
 
+    public void setFamily(String family) {
+        this.family = parseID(family)
+    }
+
     public String getIndividual() {
         return individual
+    }
+
+    public void setIndividual(String individual) {
+        this.individual = parseID(individual)
     }
 
     public String getFather() {
         return father
     }
 
+    public void setFather(String father) {
+        this.father = parseID(father)
+    }
+
     public String getMother() {
         return mother
+    }
+
+    public void setMother(String mother) {
+        this.mother = parseID(mother)
     }
 
     public String getSex() {
         return sex.toString()
     }
 
+    public void setSex(String sex) {
+        this.sex = Sex.determine(sex)
+    }
+
     public String getPhenotype() {
         return phenotype.toString()
     }
 
+    public void setPhenotype(String phenotype) {
+        this.phenotype = Phenotype.determine(phenotype)
+    }
+
     public String toString() {
-        return "${family}\t${individual}\t${father ?: ''}\t${mother ?: ''}\t${sex}\t${phenotype}"
+        return "${family}\t${individual}\t${father ?: '0'}\t${mother ?: '0'}\t${sex}\t${phenotype}"
     }
 
 }
