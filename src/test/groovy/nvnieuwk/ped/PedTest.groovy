@@ -40,6 +40,38 @@ class PedTest extends Specification {
         result.size() == 6
     }
 
+    def 'should not import duplicate entries' () {
+        given:
+        def ped = new Ped(Mock(Session))
+        when:
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.changes.ped").getPath()))
+        def result = ped.getEntries()
+        then:
+        result.size() == 3
+        result.collect { it.toString() } == [
+            "family2	sample4	0	0	2	0",
+            "family2	sample5	0	0	1	0",
+            "family2	sample6	sample5	sample4	1	0"
+        ]
+    }
+
+    def 'should overwrite duplicate entries' () {
+        given:
+        def ped = new Ped(Mock(Session))
+        when:
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.changes.ped").getPath()), overwrite:true)
+        def result = ped.getEntries()
+        then:
+        result.size() == 3
+        result.collect { it.toString() } == [
+            "family2	sample4	0	0	1	0",
+            "family2	sample5	0	0	2	0",
+            "family2	sample6	sample4	sample5	2	0"
+        ]
+    }
+
     def 'getEntries' () {
         given:
         def ped = new Ped(Mock(Session))
