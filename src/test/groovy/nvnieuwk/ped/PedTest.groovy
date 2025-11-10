@@ -134,7 +134,7 @@ class PedTest extends Specification {
         result instanceof Path
         result.exists()
         result.text.split("\n").length == 3
-        result.toString().endsWith("${workDir.baseName}/generated_peds/ped_50f1dbc063e6d36b2dfdc9146b72d2a5.ped")
+        result.toString().endsWith("${workDir.baseName}/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped")
     }
 
     def 'writePed overwrite' () {
@@ -147,7 +147,7 @@ class PedTest extends Specification {
         result instanceof Path
         result.exists()
         result.text.split("\n").length == 3
-        result.toString().endsWith("/generated_peds/ped_50f1dbc063e6d36b2dfdc9146b72d2a5.ped")
+        result.toString().endsWith("/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped")
     }
 
     def 'writePed custom file name' () {
@@ -177,6 +177,6 @@ class PedTest extends Specification {
         result instanceof Path
         result.exists()
         result.text.split("\n").length == 3
-        result.toString().endsWith("/generated_peds/ped_50f1dbc063e6d36b2dfdc9146b72d2a5.ped")
+        result.toString().endsWith("/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped")
     }
 }
