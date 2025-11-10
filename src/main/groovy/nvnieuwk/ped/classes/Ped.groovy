@@ -11,7 +11,7 @@ import nvnieuwk.ped.exceptions.InvalidPedigreeException
 
 @Slf4j
 class Ped {
-    private final Set<PedEntry> entries = []
+    private Set<PedEntry> entries = []
 
     private final String workDir
 
@@ -39,6 +39,22 @@ class Ped {
 
     public Set<PedEntry> getEntries() {
         return entries
+    }
+
+    public void setEntries(Set<PedEntry> entries) {
+        this.entries = entries
+    }
+
+    public void setEntries(List<PedEntry> entries) {
+        this.entries = entries as Set<PedEntry>
+    }
+
+    public void addEntry(PedEntry entry) {
+        this.entries.add(entry)
+    }
+
+    public void addEntries(Set<PedEntry> entries) {
+        this.entries.addAll(entries)
     }
 
     public Set<String> getFamilies() {
