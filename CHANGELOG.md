@@ -1,5 +1,11 @@
 # nf-ped changelog
 
+## 0.3.1
+
+### Fixed
+
+1. Corrected the file handling to resolve issues on cloud systems
+
 ## 0.3.0
 
 ### Added
