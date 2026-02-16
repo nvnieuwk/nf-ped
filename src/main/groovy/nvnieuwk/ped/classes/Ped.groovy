@@ -13,10 +13,10 @@ import nvnieuwk.ped.exceptions.InvalidPedigreeException
 class Ped {
     private Set<PedEntry> entries = []
 
-    private final String workDir
+    private final Path workDir
 
     Ped(Session session) {
-        this.workDir = session?.getWorkDir()?.toString() ?: "work"
+        this.workDir = session?.getWorkDir() ?: Nextflow.file("work")
     }
 
     public void importPed(Map<String, Object> options = [:], Path pedFile) {
@@ -105,13 +105,16 @@ class Ped {
         }
 
         // Generate unique output path name for PED contents
+        Path outputFile
         if(!outputPath) {
             def MessageDigest md = MessageDigest.getInstance("MD5")
             publishEntries.each { PedEntry entry ->
                 md.update(entry.toString().getBytes("UTF-8"))
             }
             def String md5 = new BigInteger(1, md.digest()).toString(16)
-            outputPath = "${workDir}/generated_peds/ped_${md5}.ped" as String
+            outputFile = workDir.resolve("generated_peds/ped_${md5}.ped")
+        } else {
+            outputFile = Nextflow.file(outputPath)
         }
 
         // Write the PED file
@@ -119,7 +122,6 @@ class Ped {
             log.warn("No PED entries to publish, skipping writing PED file")
             return null
         }
-        final Path outputFile = Nextflow.file(outputPath)
         if(!outputFile.exists() || options.get("overwrite", false)) {
             if(!outputFile.parent.exists()) {
                 outputFile.parent.mkdirs()
