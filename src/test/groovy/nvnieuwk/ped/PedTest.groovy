@@ -1,3 +1,4 @@
+/* groovylint-disable MethodName */
 package nvnieuwk.ped
 
 import java.nio.file.Path
@@ -5,223 +6,225 @@ import java.nio.file.Path
 import nextflow.Session
 import nextflow.Nextflow
 import spock.lang.Specification
+import groovy.transform.CompileDynamic
 
 /**
  * Implements tests for the {@link Ped} class.
- *
  */
+@CompileDynamic
 class PedTest extends Specification {
 
-    def 'should create the Ped instance' () {
+    void 'should create the Ped instance'() {
         given:
-        def ped = new Ped(Mock(Session))
+        Ped ped = new Ped(Mock(Session))
         expect:
         ped instanceof Ped
     }
 
-    def 'should import 1 PED file' () {
+    void 'should import 1 PED file'() {
         given:
-        def ped = new Ped(Mock(Session))
+        Ped ped = new Ped(Mock(Session))
         when:
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        def result = ped.getEntries()
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        Set<PedEntry> result = ped.entries
         then:
         result.size() == 3
     }
 
-    def 'should import 2 PED files' () {
+    void 'should import 2 PED files'() {
         given:
-        def ped = new Ped(Mock(Session))
+        Ped ped = new Ped(Mock(Session))
         when:
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
-        def result = ped.getEntries()
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test2.ped').path))
+        Set<PedEntry> result = ped.entries
         then:
         result.size() == 6
     }
 
-    def 'should not import duplicate entries' () {
+    void 'should not import duplicate entries'() {
         given:
-        def ped = new Ped(Mock(Session))
+        Ped ped = new Ped(Mock(Session))
         when:
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.changes.ped").getPath()))
-        def result = ped.getEntries()
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.changes.ped').path))
+        Set<PedEntry> result = ped.entries
         then:
         result.size() == 3
-        result.collect { it.toString() } == [
-            "family2	sample4	0	0	2	0",
-            "family2	sample5	0	0	1	0",
-            "family2	sample6	sample5	sample4	1	0"
+        result*.toString() == [
+            'family2\tsample4\t0\t0\t2\t0',
+            'family2\tsample5\t0\t0\t1\t0',
+            'family2\tsample6\tsample5\tsample4\t1\t0'
         ]
     }
 
-    def 'should overwrite duplicate entries' () {
+    void 'should overwrite duplicate entries'() {
         given:
-        def ped = new Ped(Mock(Session))
+        Ped ped = new Ped(Mock(Session))
         when:
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.changes.ped").getPath()), overwrite:true)
-        def result = ped.getEntries()
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.changes.ped').path), overwrite:true)
+        Set<PedEntry> result = ped.entries
         then:
         result.size() == 3
-        result.collect { it.toString() } == [
-            "family2	sample4	0	0	1	0",
-            "family2	sample5	0	0	2	0",
-            "family2	sample6	sample4	sample5	2	0"
+        result*.toString() == [
+            'family2\tsample4\t0\t0\t1\t0',
+            'family2\tsample5\t0\t0\t2\t0',
+            'family2\tsample6\tsample4\tsample5\t2\t0'
         ]
     }
 
-    def 'getEntries' () {
+    void 'getEntries'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
         when:
-        def result = ped.getEntries()
+        Set<PedEntry> result = ped.entries
         then:
         result instanceof Set<PedEntry>
         result.size() == 3
     }
 
-    def 'getFamilies' () {
+    void 'getFamilies'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
         when:
-        def result = ped.getFamilies()
+        Set<String> result = ped.families
         then:
         result instanceof Set<String>
-        result == ["family2"] as Set<String>
+        result == ['family2'] as Set<String>
     }
 
-    def 'getIndividuals' () {
+    void 'getIndividuals'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
         when:
-        def result = ped.getIndividuals()
+        Set<String> result = ped.individuals
         then:
         result instanceof Set<String>
-        result == ["sample4", "sample5", "sample6"] as Set<String>
+        result == ['sample4', 'sample5', 'sample6'] as Set<String>
     }
 
-    def 'getEntriesByFamily' () {
+    void 'getEntriesByFamily'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test2.ped').path))
         when:
-        def result = ped.getEntriesByFamily("family1")
+        Set<PedEntry> result = ped.getEntriesByFamily('family1')
         then:
         result instanceof Set<PedEntry>
         result.size() == 3
     }
 
-    def 'getEntriesByIndividual' () {
+    void 'getEntriesByIndividual'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test2.ped').path))
         when:
-        def result = ped.getEntriesByIndividual("sample2")
+        Set<PedEntry> result = ped.getEntriesByIndividual('sample2')
         then:
         result instanceof Set<PedEntry>
         result.size() == 1
     }
 
-    def 'getFamiliesFromIndividual' () {
+    void 'getFamiliesFromIndividual'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test2.ped').path))
         when:
-        def result = ped.getFamiliesFromIndividual("sample2")
+        Set<String> result = ped.getFamiliesFromIndividual('sample2')
         then:
         result instanceof Set<String>
-        result == ["family1"] as Set<String>
+        result == ['family1'] as Set<String>
     }
 
-    def 'getIndividualsFromFamily' () {
+    void 'getIndividualsFromFamily'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test2.ped').path))
         when:
-        def result = ped.getIndividualsFromFamily("family1")
+        Set<String> result = ped.getIndividualsFromFamily('family1')
         then:
         result instanceof Set<String>
-        result == ["sample1", "sample2", "sample3"] as Set<String>
+        result == ['sample1', 'sample2', 'sample3'] as Set<String>
     }
 
-    def 'writePed default' () {
+    void 'writePed default'() {
         given:
-        def Session session = Mock(Session)
-        def ped = new Ped(session)
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        def Path workDir = session?.getWorkDir()?.toString() ?: Nextflow.file("work")
-        Nextflow.file(workDir.resolve("generated_peds")).deleteDir()
+        Session session = Mock(Session)
+        Ped ped = new Ped(session)
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        Path workDir = session?.workDir?.toString() ?: Nextflow.file('work')
+        Nextflow.file(workDir.resolve('generated_peds')).deleteDir()
         when:
-        def result = ped.writePed()
+        Path result = ped.writePed()
         then:
         result instanceof Path
         result.exists()
-        result.text.split("\n").length == 3
+        result.text.split('\n').length == 3
         result.toString().endsWith("${workDir.baseName}/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped")
     }
 
-    def 'writePed overwrite' () {
+    void 'writePed overwrite'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
         when:
-        def result = ped.writePed(overwrite: true)
+        Path result = ped.writePed(overwrite: true)
         then:
         result instanceof Path
         result.exists()
-        result.text.split("\n").length == 3
-        result.toString().endsWith("/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped")
+        result.text.split('\n').length == 3
+        result.toString().endsWith('/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped')
     }
 
-    def 'writePed custom file name' () {
+    void 'writePed custom file name'() {
         given:
-        def Session session = Mock(Session)
-        def ped = new Ped(session)
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        def Path workDir = session?.getWorkDir()?.toString() ?: Nextflow.file("work")
-        Nextflow.file(workDir.resolve("custom_ped_name_test")).deleteDir()
+        Session session = Mock(Session)
+        Ped ped = new Ped(session)
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        Path workDir = session?.workDir?.toString() ?: Nextflow.file('work')
+        Nextflow.file(workDir.resolve('custom_ped_name_test')).deleteDir()
         when:
-        def result = ped.writePed("${workDir}/custom_ped_name_test/this_is_a_test.ped")
+        Path result = ped.writePed("${workDir}/custom_ped_name_test/this_is_a_test.ped")
         then:
         result instanceof Path
         result.exists()
-        result.text.split("\n").length == 3
+        result.text.split('\n').length == 3
         result.toString().endsWith("${workDir.baseName}/custom_ped_name_test/this_is_a_test.ped")
     }
 
-    def 'writePed filter families' () {
+    void 'writePed filter families'() {
         given:
-        def ped = new Ped(Mock(Session))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test1.ped").getPath()))
-        ped.importPed(Nextflow.file(this.getClass().getResource("/test2.ped").getPath()))
+        Ped ped = new Ped(Mock(Session))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test1.ped').path))
+        ped.importPed(Nextflow.file(this.getClass().getResource('/test2.ped').path))
         when:
-        def result = ped.writePed(families: ["family2", "family3"], overwrite: true)
+        Path result = ped.writePed(families: ['family2', 'family3'], overwrite: true)
         then:
         result instanceof Path
         result.exists()
-        result.text.split("\n").length == 3
-        result.toString().endsWith("/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped")
+        result.text.split('\n').length == 3
+        result.toString().endsWith('/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped')
     }
 
-    def 'writePed with additional fields' () {
+    void 'writePed with additional fields'() {
         given:
-        def ped = new Ped(Mock(Session))
-        def Path inputPed = Nextflow.file(this.getClass().getResource("/test_additional_fields.ped").getPath())
+        Ped ped = new Ped(Mock(Session))
+        Path inputPed = Nextflow.file(this.getClass().getResource('/test_additional_fields.ped').path)
         ped.importPed(inputPed)
         when:
-        def result = ped.writePed(overwrite: true)
+        Path result = ped.writePed(overwrite: true)
         then:
         result instanceof Path
         result.exists()
         result.text == inputPed.text
     }
+
 }

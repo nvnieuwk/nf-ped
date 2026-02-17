@@ -41,6 +41,10 @@ Or even a single PED file:
 def ped = initializePed(file("path/to/file.ped"))
 ```
 
+Additional options can be provided to this method:
+
+- `sep`: Specify a custom separator if the PED file uses a different delimiter (default is `\t`).
+
 ### Working with the PED object
 
 The PED object provides methods to fetch and publish PED data:
@@ -60,7 +64,7 @@ Additional options can be provided to this method:
 
 #### getEntries
 
-The `getEntries` method retrieves entries from the PED object. The returned values are a set of the `PedEntry` class. See the [`PedEntry`](#working-with-the-ped-entries) documentation for more details. 
+The `getEntries` method retrieves entries from the PED object. The returned values are a set of the `PedEntry` class. See the [`PedEntry`](#working-with-the-ped-entries) documentation for more details.
 
 ```groovy
 def entries = ped.getEntries()
@@ -159,12 +163,14 @@ def pedFilePath = ped.writePed("path/to/output.ped")
 ```
 
 Additional options can be provided to this method:
+
 - `families`: A list of family IDs to filter the entries on. Only entries belonging to the specified families will be included in the output PED file. If not provided, all entries will be included.
 - `overwrite`: A boolean flag indicating whether to overwrite an existing PED file. Default is `false`.
 
 ### Working with the PED entries
 
 The PED entries are represented by the `PedEntry` class. Each entry corresponds to a line in the PED file and contains the following attributes:
+
 - `family`: The family ID.
 - `individual`: The individual ID.
 - `father`: The father ID.
@@ -201,6 +207,7 @@ entry.setPhenotype("2")
 ## Building
 
 To build the plugin:
+
 ```bash
 make assemble
 ```
@@ -214,18 +221,15 @@ The plugin can be tested without a local Nextflow installation:
 
 ## Publishing
 
-Plugins can be published to a central plugin registry to make them accessible to the Nextflow community. 
-
+Plugins can be published to a central plugin registry to make them accessible to the Nextflow community.
 
 Follow these steps to publish the plugin to the Nextflow Plugin Registry:
 
 1. Create a file named `$HOME/.gradle/gradle.properties`, where $HOME is your home directory. Add the following properties:
 
-    * `npr.apiKey`: Your Nextflow Plugin Registry access token.
+   - `npr.apiKey`: Your Nextflow Plugin Registry access token.
 
 2. Use the following command to package and create a release for your plugin on GitHub: `make release`.
 
-
 > [!NOTE]
 > The Nextflow Plugin registry is currently available as preview technology. Contact info@nextflow.io to learn how to get access to it.
-> 

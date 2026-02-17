@@ -13,4 +13,5 @@ class PedPlugin extends BasePlugin {
     PedPlugin(PluginWrapper wrapper) {
         super(wrapper)
     }
+
 }
