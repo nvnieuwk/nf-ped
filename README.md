@@ -171,6 +171,7 @@ The PED entries are represented by the `PedEntry` class. Each entry corresponds 
 - `mother`: The mother ID.
 - `sex`: The sex of the individual (1 = male, 2 = female, other = unknown).
 - `phenotype`: The phenotype of the individual (1 = unaffected, 2 = affected, other = missing).
+- `additionalFields`: A list of strings containing the values of any additional columns in the PED file beyond the standard six columns.
 
 These attributes can be accessed directly from the `PedEntry` object. For example:
 
