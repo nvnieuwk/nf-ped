@@ -16,11 +16,6 @@ class PedExtension extends PluginExtensionPoint {
 
     Session session
 
-    @Override
-    protected void init(Session session) {
-        this.session = session
-    }
-
     @Function
     Ped initializePed(Map<String,Object> options = [:], Path pedFile) {
         return initializePed(options, [pedFile])
@@ -30,9 +25,14 @@ class PedExtension extends PluginExtensionPoint {
     Ped initializePed(Map<String,Object> options = [:], List<Path> pedFiles = []) {
         final Ped ped = new Ped(session)
         pedFiles.each { Path pedFile ->
-            ped.importPed(pedFile)
+            ped.importPed(options, pedFile)
         }
         return ped
+    }
+
+    @Override
+    protected void init(Session session) {
+        this.session = session
     }
 
 }

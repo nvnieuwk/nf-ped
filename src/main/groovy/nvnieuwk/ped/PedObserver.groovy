@@ -2,7 +2,6 @@ package nvnieuwk.ped
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import nextflow.Session
 import nextflow.trace.TraceObserver
 
 /**
