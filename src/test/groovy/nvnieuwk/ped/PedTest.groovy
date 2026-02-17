@@ -211,4 +211,17 @@ class PedTest extends Specification {
         result.text.split("\n").length == 3
         result.toString().endsWith("/generated_peds/ped_9c3038bfcab545e7530cab4090cd4071.ped")
     }
+
+    def 'writePed with additional fields' () {
+        given:
+        def ped = new Ped(Mock(Session))
+        def Path inputPed = Nextflow.file(this.getClass().getResource("/test_additional_fields.ped").getPath())
+        ped.importPed(inputPed)
+        when:
+        def result = ped.writePed(overwrite: true)
+        then:
+        result instanceof Path
+        result.exists()
+        result.text == inputPed.text
+    }
 }

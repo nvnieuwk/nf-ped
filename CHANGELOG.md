@@ -1,5 +1,11 @@
 # nf-ped changelog
 
+## 0.4.0
+
+## Added
+
+1. Add support for additional fields in the PED input file. Any additional columns will also be included in the output PED file and can be accessed in the `PedEntry` class with the `additionalFields` attribute, which is a list of strings containing the values of the additional columns for each entry.
+
 ## 0.3.1
 
 ### Fixed

@@ -11,6 +11,7 @@ class PedEntry {
     private String mother
     private Sex sex
     private Phenotype phenotype
+    private List<String> additionalFields = []
 
     PedEntry(List<String> parts, Integer lineNumber, Path pedFile) {
         this.family = parseID(parts[0])
@@ -25,6 +26,9 @@ class PedEntry {
         this.mother = parseID(parts[3])
         this.sex = Sex.determine(parts[4])
         this.phenotype = Phenotype.determine(parts[5])
+        if(parts.size() > 6) {
+            this.additionalFields = parts[6..-1]
+        }
     }
 
     private final List<String> ignoreValues = ['0', 'NA', '']
@@ -89,8 +93,17 @@ class PedEntry {
         this.phenotype = Phenotype.determine(phenotype)
     }
 
+    public List<String> getAdditionalFields() {
+        return additionalFields
+    }
+
+    public void setAdditionalFields(List<String> additionalFields) {
+        this.additionalFields = additionalFields
+    }
+
     public String toString() {
-        return "${family}\t${individual}\t${father ?: '0'}\t${mother ?: '0'}\t${sex}\t${phenotype}"
+        def additional = additionalFields ? "\t" + additionalFields.join("\t") : ""
+        return "${family}\t${individual}\t${father ?: '0'}\t${mother ?: '0'}\t${sex}\t${phenotype}${additional}"
     }
 
 }
