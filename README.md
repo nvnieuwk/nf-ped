@@ -12,7 +12,7 @@ Add the following to your Nextflow configuration file to enable the plugin:
 
 ```groovy
 plugins {
-    id 'nf-ped@0.3.1'
+    id 'nf-ped@0.4.0'
 }
 ```
 
@@ -171,6 +171,7 @@ The PED entries are represented by the `PedEntry` class. Each entry corresponds 
 - `mother`: The mother ID.
 - `sex`: The sex of the individual (1 = male, 2 = female, other = unknown).
 - `phenotype`: The phenotype of the individual (1 = unaffected, 2 = affected, other = missing).
+- `additionalFields`: A list of strings containing the values of any additional columns in the PED file beyond the standard six columns.
 
 These attributes can be accessed directly from the `PedEntry` object. For example:
 
@@ -209,7 +210,7 @@ make assemble
 The plugin can be tested without a local Nextflow installation:
 
 1. Build and install the plugin to your local Nextflow installation: `make install`
-2. Run a pipeline with the plugin: `nextflow run hello -plugins nf-ped@0.3.1`
+2. Run a pipeline with the plugin: `nextflow run hello -plugins nf-ped@0.4.0`
 
 ## Publishing
 
